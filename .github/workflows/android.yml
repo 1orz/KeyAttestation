@@ -33,7 +33,7 @@ jobs:
           echo 'org.gradle.parallel=true' >> gradle.properties
           ./gradlew assemble
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.os }}-artifact
           path: app/build/outputs
