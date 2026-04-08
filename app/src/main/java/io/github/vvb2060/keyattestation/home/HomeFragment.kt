@@ -3,6 +3,8 @@ package io.github.vvb2060.keyattestation.home
 import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.method.LinkMovementMethod
 import android.view.*
 import android.widget.ImageView
@@ -39,6 +41,14 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
 
     private val viewModel: HomeViewModel by viewModels { HomeViewModel.Factory }
 
+    private val handler = Handler(Looper.getMainLooper())
+    private val tickRunnable = object : Runnable {
+        override fun run() {
+            adapter.updateRevocationStatus()
+            handler.postDelayed(this, 1000)
+        }
+    }
+
     private val save = registerForActivityResult(CreateDocument("application/x-pkcs7-certificates")) {
         viewModel.save(it)
     }
@@ -61,6 +71,7 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
     }
 
     override fun onDestroyView() {
+        handler.removeCallbacks(tickRunnable)
         super.onDestroyView()
         _binding = null
     }
@@ -94,12 +105,22 @@ class HomeFragment : AppFragment(), HomeAdapter.Listener, MenuProvider {
                 }
             }
         }
+
+        viewModel.revocationUpdated.observe(viewLifecycleOwner) {
+            adapter.updateRevocationStatus()
+        }
+
+        handler.postDelayed(tickRunnable, 1000)
     }
 
     override fun onAttestationInfoClick(data: Attestation) {
         val result = viewModel.getAttestationData().value!!.data!! as AttestationData
         result.showAttestation = data
         adapter.updateData(result)
+    }
+
+    override fun onRefreshRevocationList() {
+        viewModel.refreshRevocationList()
     }
 
     override fun onRkpHostnameClick(data: String) {

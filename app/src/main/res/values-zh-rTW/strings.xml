@@ -40,6 +40,10 @@
     <string name="oem_root_cert">裝置製造商的根憑證</string>
     <string name="oem_root_cert_summary">此裝置信任此根憑證，但它可能不被其它人信任。</string>
 
+    <string name="revocation_list">註銷列表</string>
+    <string name="revocation_list_description">憑證註銷狀態列表由 Google 維護。認證鏈中的每個憑證都應與此列表進行比對檢查。</string>
+    <string name="revocation_loading">正在更新…</string>
+
     <string name="cert_chain">憑證鏈</string>
     <string name="cert_chain_description">憑證鏈是用於驗證金鑰的憑證列表。從這個金鑰的憑證開始，每個憑證均由鏈中下一個憑證簽章，到根憑證為止。認證的可信度取決於憑證鏈的根憑證。</string>
     <string name="cert_info">憑證資訊</string>

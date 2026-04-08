@@ -40,6 +40,10 @@
     <string name="oem_root_cert">Certificado root OEM</string>
     <string name="oem_root_cert_summary">Este dispositivo confia neste certificado root, mas pode não ser confiável para outras pessoas.</string>
 
+    <string name="revocation_list">Lista de revogação</string>
+    <string name="revocation_list_description">A lista de status de revogação de certificados é mantida pelo Google. Cada certificado na cadeia de atestado deve ser verificado nesta lista.</string>
+    <string name="revocation_loading">Atualizando…</string>
+
     <string name="cert_chain">Cadeia de certificados</string>
     <string name="cert_chain_description">A cadeia de certificados é uma lista de certificados usados para autenticar uma chave. A cadeia começa com o certificado associado a essa chave, e cada certificado é assinado pelo próximo na cadeia. A cadeia termina com um certificado root, e a confiabilidade do atestado depende do certificado root da cadeia.</string>
     <string name="cert_info">Informações do certificado</string>

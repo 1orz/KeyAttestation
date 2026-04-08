@@ -40,6 +40,10 @@
     <string name="oem_root_cert">设备制造商的根证书</string>
     <string name="oem_root_cert_summary">此设备信任该根证书，但它可能不被其它人信任。</string>
 
+    <string name="revocation_list">吊销列表</string>
+    <string name="revocation_list_description">证书吊销状态列表由 Google 维护。认证链中的每个证书都应与此列表进行比对检查。</string>
+    <string name="revocation_loading">正在更新…</string>
+
     <string name="cert_chain">证书链</string>
     <string name="cert_chain_description">证书链是用于验证密钥的证书列表。从该密钥的证书开始，每个证书均由链中下一个证书签名，到根证书为止。认证的可信度取决于证书链的根证书。</string>
     <string name="cert_info">证书信息</string>

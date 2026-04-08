@@ -157,6 +157,35 @@ open class CommonItemViewHolder<T>(itemView: View, binding: HomeCommonItemBindin
             }
         }
 
+        val REVOCATION_STATUS_CREATOR = Creator<CommonData> { inflater, parent ->
+            val binding = HomeCommonItemBinding.inflate(inflater, parent, false)
+            object : CommonItemViewHolder<CommonData>(binding.root, binding) {
+
+                init {
+                    this.binding.apply {
+                        text1.isVisible = false
+                        icon.background = null
+                        icon.setImageDrawable(itemView.context.getDrawable(R.drawable.ic_refresh_24))
+                        icon.imageTintList = itemView.context.theme.resolveColorStateList(
+                                rikka.material.R.attr.colorAccent)
+                        icon.setOnClickListener {
+                            listener.onRefreshRevocationList()
+                        }
+                        root.setOnClickListener {
+                            listener.onCommonDataClick(data)
+                        }
+                    }
+                }
+
+                override fun onBind() {
+                    binding.title.setText(data.title)
+                    binding.summary.text = data.data ?: ""
+                    // Register this summary view for live tick updates
+                    (bindingAdapter as? HomeAdapter)?.revocationSummaryView = binding.summary
+                }
+            }
+        }
+
         val CERT_INFO_CREATOR = Creator<CertificateInfo> { inflater, parent ->
             val binding = HomeCommonItemBinding.inflate(inflater, parent, false)
             object : CommonItemViewHolder<CertificateInfo>(binding.root, binding) {

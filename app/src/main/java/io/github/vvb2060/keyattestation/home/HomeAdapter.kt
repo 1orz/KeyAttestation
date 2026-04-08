@@ -2,6 +2,7 @@ package io.github.vvb2060.keyattestation.home
 
 import android.util.Base64
 import android.util.Pair
+import android.widget.TextView
 import com.google.common.io.BaseEncoding
 import io.github.vvb2060.keyattestation.R
 import io.github.vvb2060.keyattestation.attestation.*
@@ -18,7 +19,10 @@ class HomeAdapter(listener: Listener) : IdBasedRecyclerViewAdapter() {
         fun onCommonDataClick(data: Data)
         fun onAttestationInfoClick(data: Attestation)
         fun onRkpHostnameClick(data: String)
+        fun onRefreshRevocationList()
     }
+
+    var revocationSummaryView: TextView? = null
 
     init {
         setHasStableIds(true)
@@ -85,6 +89,9 @@ class HomeAdapter(listener: Listener) : IdBasedRecyclerViewAdapter() {
                         rikka.material.R.attr.colorSafe), ID_CERT_STATUS)
             }
         }
+
+        addItem(CommonItemViewHolder.REVOCATION_STATUS_CREATOR,
+                buildRevocationSummary(), ID_REVOCATION_STATUS)
 
         var id = ID_CERT_INFO_START
         addItem(SubtitleViewHolder.CREATOR, CommonData(
@@ -246,6 +253,39 @@ class HomeAdapter(listener: Listener) : IdBasedRecyclerViewAdapter() {
         notifyDataSetChanged()
     }
 
+    fun updateRevocationStatus() {
+        revocationSummaryView?.text = buildRevocationText()
+    }
+
+    private fun buildRevocationSummary(): CommonData {
+        return CommonData(R.string.revocation_list, R.string.revocation_list_description,
+                buildRevocationText())
+    }
+
+    private fun buildRevocationText(): String {
+        if (RevocationList.isLoading()) return "\u2026"
+        val lastFetch = RevocationList.getLastFetchTime()
+        val expiryTime = RevocationList.getCacheExpiryTime()
+        val count = RevocationList.getEntryCount()
+        val now = System.currentTimeMillis()
+
+        val sb = StringBuilder()
+        sb.append(count).append(" entries")
+        if (lastFetch > 0) {
+            val elapsed = (now - lastFetch) / 1000
+            sb.append(" | ").append(formatDuration(elapsed))
+            if (expiryTime > now) {
+                val remaining = (expiryTime - now) / 1000
+                sb.append(" | ").append(formatDuration(remaining))
+            } else if (expiryTime > 0) {
+                sb.append(" | expired")
+            }
+        } else {
+            sb.append(" | built-in")
+        }
+        return sb.toString()
+    }
+
     fun allowFrameAt(position: Int): Boolean {
         if (position < 0) return false
         val id = getItemId(position)
@@ -267,9 +307,18 @@ class HomeAdapter(listener: Listener) : IdBasedRecyclerViewAdapter() {
 
     companion object {
 
+        fun formatDuration(totalSeconds: Long): String {
+            val h = totalSeconds / 3600
+            val m = (totalSeconds % 3600) / 60
+            val s = totalSeconds % 60
+            return if (h > 0) String.format("%d:%02d:%02d", h, m, s)
+            else String.format("%d:%02d", m, s)
+        }
+
         private const val ID_ERROR = 0L
         private const val ID_CERT_STATUS = 1L
         private const val ID_BOOT_STATUS = 2L
+        private const val ID_REVOCATION_STATUS = 3L
         private const val ID_CERT_INFO_START = 1000L
         private const val ID_RKP_HOSTNAME = 2000L
         private const val ID_DESCRIPTION_START = 3000L

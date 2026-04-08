@@ -19,6 +19,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.samsung.android.security.keystore.AttestationUtils
 import io.github.vvb2060.keyattestation.AppApplication
+import io.github.vvb2060.keyattestation.attestation.RevocationList
 import io.github.vvb2060.keyattestation.keystore.KeyStoreManager
 import io.github.vvb2060.keyattestation.repository.AttestationRepository
 import io.github.vvb2060.keyattestation.repository.BaseData
@@ -42,6 +43,8 @@ class HomeViewModel(
 
     private val attestationRepository = AttestationRepository()
     private val attestationData = MutableLiveData<Resource<BaseData>>()
+    private val _revocationUpdated = MutableLiveData<Boolean>()
+    val revocationUpdated: LiveData<Boolean> get() = _revocationUpdated
 
     val hasStrongBox = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
             pm.hasSystemFeature(PackageManager.FEATURE_STRONGBOX_KEYSTORE)
@@ -126,6 +129,10 @@ class HomeViewModel(
         }
 
     init {
+        AppApplication.executor.execute {
+            RevocationList.init()
+            _revocationUpdated.postValue(true)
+        }
         load()
     }
 
@@ -207,6 +214,15 @@ class HomeViewModel(
         } catch (e: Exception) {
             Log.e(AppApplication.TAG, "import: ", e)
             AppApplication.toast(e.message)
+        }
+    }
+
+    fun refreshRevocationList() = AppApplication.executor.execute {
+        _revocationUpdated.postValue(false)
+        val success = RevocationList.refresh()
+        _revocationUpdated.postValue(true)
+        if (success && hasCertificates()) {
+            load()
         }
     }
 

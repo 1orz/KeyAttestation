@@ -421,6 +421,15 @@ public class AuthorizationList {
                 case EatClaim.PADDING:
                     paddingModes = CborUtils.getIntSet(submodMap, key);
                     break;
+                case EatClaim.BLOCK_MODE:
+                    // Block mode not stored separately, but parsed to avoid unknown tag error
+                    break;
+                case EatClaim.CALLER_NONCE:
+                    // Caller nonce is a boolean tag, not stored separately
+                    break;
+                case EatClaim.MIN_MAC_LENGTH:
+                    // Min MAC length not stored separately
+                    break;
                 case EatClaim.RSA_PUBLIC_EXPONENT:
                     rsaPublicExponent = CborUtils.getLong(submodMap, key);
                     break;
@@ -517,11 +526,24 @@ public class AuthorizationList {
                     break;
                 case EatClaim.APPLICATION_ID:
                     applicationId = CborUtils.getString(submodMap, key);
+                    break;
                 case EatClaim.EARLY_BOOT_ONLY:
                     earlyBootOnly = true;
                     break;
                 case EatClaim.DEVICE_UNIQUE_ATTESTATION:
                     deviceUniqueAttestation = true;
+                    break;
+                case EatClaim.IDENTITY_CREDENTIAL_KEY:
+                    identityCredentialKey = true;
+                    break;
+                case EatClaim.USAGE_COUNT_LIMIT:
+                    usageCountLimit = CborUtils.getInt(submodMap, key);
+                    break;
+                case EatClaim.ATTESTATION_ID_SECOND_IMEI:
+                    secondImei = CborUtils.getString(submodMap, key);
+                    break;
+                case EatClaim.MODULE_HASH:
+                    moduleHash = CborUtils.getBytes(submodMap, key);
                     break;
             }
         }
