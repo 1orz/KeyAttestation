@@ -112,7 +112,7 @@ configurations.configureEach {
 dependencies {
     compileOnly project(':stub')
 
-    implementation 'org.bouncycastle:bcprov-jdk18on:1.83'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.84'
     implementation 'com.google.guava:guava:33.5.0-android'
     implementation 'co.nstant.in:cbor:0.9'
 
