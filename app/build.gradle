@@ -113,7 +113,7 @@ dependencies {
     compileOnly project(':stub')
 
     implementation 'org.bouncycastle:bcprov-jdk18on:1.83'
-    implementation 'com.google.guava:guava:33.5.0-android'
+    implementation 'com.google.guava:guava:33.6.0-android'
     implementation 'co.nstant.in:cbor:0.9'
 
     //noinspection GradleDependency
